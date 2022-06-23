@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+import locale
+#################################################
+ATM
+#################################################
+class BankAccount:
+    """Bank Account protected by a pin number."""
+
+    def __init__(self, pin):
+        """Initial account balance is 0 and pin is 'pin'."""
+        self.balance = 0.0
+        self.pin = 1234
+
+    @property
+    def pin(self):
+        return self.pin
+
+    @pin.setter
+    def set_pin(self, pin):
+        if type(self.pin) != int:
+            raise TypeError("Invalid pin, should be int")
+        if self.pin != 1234:
+            raise ValueError("Invalid pin.  Please enter your pin for your Alchemy Funds & Savings account.")
+        self._pin = pin
+        return True
+
+    @pin.getter
+    def get_pin(self, pin):
+        return self._pin
+
+
+
+    def deposit(self, pin, amount):
+        """Increment account balance by amount and return new balance."""
+        self._balance = self._balance + amount
+
+    def withdraw(self, pin, amount):
+        """Decrement account balance by amount and return amount withdrawn."""
+        self._balance = self._balance - amount
+
+    def get_balance(self, pin):
+        """Return account balance."""
+        return self._balance
+
+    @classmethod
+    def change_pin(cls, oldpin, newpin):
+        """Change pin from oldpin to newpin."""
+
+        cls._pin = newpin
+
+
+
+
+
+
+class SavingsAccount(BankAccount):
+
+
+    def __init__(self):
+        super(SavingsAccount, self).__init__()
+        self._interest_rate = 3.00
+        self._minBalance = 0.0
+
+
+    def month_end(self, amount):
+        interest = self._minBalance * self._interestrate / 100
+        super.deposit(interest)
+
+
+    @classmethod
+    def set_rate(cls, rate):
+        cls.interest_rate = rate
+
+class FeeSavingsAccount(SavingsAccount):
+    def __init__(self):
+        super(FeeSavingsAccount, self).__init__()
+        self._fee = 1
+
+    def withdraw(self, amount):
+        self._balance -= self._fee
+        PENALTY = 10.00
+        if amount > self._balance:
+            self._balance = self._balance - PENALTY
+        else:
+            self._balance = self._balance - amount
+
+def get_choice():
+    while True:
+        try:
+            choice = int(input(
+                "\n"
+                "****** Welcome to Alchemy Investments and Bank ******\n"
+                "Please enter your card and choose from the following actions:\n"
+                "  1. Deposit\n"
+                "  2. Withdraw\n"
+                "  3. View Current Balance\n"
+                "  4. Change Pin\n"
+                "  5. Exit \n"
+                "Please enter your choice: "))
+            return choice
+        except:
+            print("Invalid input")
+
+
+
+
+def quit():
+    """
+    Do cleanup and exit program; ok to use exit() in this function in this assignment.
+    :param contact_list:
+    :return: (Never, because it exits the program)
+    """
+    print("Alchemy enjoys turning your funds into Gold.\n"
+          "Have a good day!\n")
+    exit(0)
+
+
+def main():
+    #manage the flow
+
+    while True:
+
+        user_pin = int(input("Please enter current 4-digit pin: "))
+        while user_pin != FeeSavingsAccount.pin:
+            user_pin = int(input("\nInvalid Pin.. Re-enter your Pin please: "))
+
+
+        pin = user_pin
+
+        choice = get_choice()
+        if choice == 1:
+            while True:
+
+                amount = int(input("Please enter amount you would like to deposit into your Savings Account: "))
+                if amount > 0:
+                    FeeSavingsAccount.deposit(amount)
+                return ("Invalid amount.  Please enter an amount more than zero.")
+
+
+        elif choice == 2:
+            while True:
+                try:
+                    amount = int(input("Please enter amount you would like to deposit into your Savings Account:"))
+                    if amount > 0:
+                        FeeSavingsAccount.withdraw(amount)
+                    return ("Invalid amount.  Please enter an amount more than zero.")
+                except:
+                    print("Invalid amount. Please try again")
+
+        elif choice == 3:
+            FeeSavingsAccount.get_balance(pin)
+        elif choice == 4:
+            while True:
+                try:
+                    oldpin = int(input("Please enter current 4-digit pin:"))
+                    if oldpin == FeeSavingsAccount.pin:
+                        newpin = int(input("Please enter new 4-digit pin:"))
+                        FeeSavingsAccount.change_pin(oldpin, newpin)
+                    return (
+                    "Invalid pin for user.  Please enter your current 4-digit pin used for Alchemy Investments and Bank")
+                except ValueError:
+                    print('You must enter an integer')
+
+        elif choice == 5:
+            quit()
+
+        else:
+            print("Invalid choice")
+
+
+if __name__ == "__main__":
+    main()
